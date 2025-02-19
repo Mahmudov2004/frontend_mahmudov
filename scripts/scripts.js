@@ -77,3 +77,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const swiper = new Swiper('.swiper-container', {
+        // Параметры слайдера
+        loop: true, // Бесконечная прокрутка
+        autoplay: {
+            delay: 3000, // Автопрокрутка каждые 3 секунды
+            disableOnInteraction: false, // Продолжать автопрокрутку после взаимодействия
+        },
+
+        // Пагинация
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true, // Разрешить клик по точкам пагинации
+        },
+
+        // Навигационные кнопки
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        // Отступы между слайдами
+        spaceBetween: 30,
+
+        // Количество слайдов для показа одновременно
+        slidesPerView: 1, // Показываем только одну карточку
+
+        // Адаптивность
+        breakpoints: {
+            640: {
+                slidesPerView: 1,
+            },
+            768: {
+                slidesPerView: 1,
+            },
+            1024: {
+                slidesPerView: 1,
+            },
+        },
+    });
+});
