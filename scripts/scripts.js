@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Количество слайдов для показа одновременно
         slidesPerView: 1, // Показываем только одну карточку
 
-        // Адаптивность
+        
         breakpoints: {
             640: {
                 slidesPerView: 1,
@@ -116,5 +116,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 slidesPerView: 1,
             },
         },
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modalOverlay = document.getElementById('modalOverlay');
+    const openButtons = document.querySelectorAll('.sign, .login');
+    const closeButtons = document.querySelectorAll('#closeModal, #cancelBtn, #okBtn');
+
+    // Открытие модального окна
+    openButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            modalOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Задержка для анимации
+            setTimeout(() => {
+                modalOverlay.querySelector('.modal').classList.add('active');
+            }, 50);
+        });
+    });
+
+    // Закрытие модального окна
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            modalOverlay.querySelector('.modal').classList.remove('active');
+            
+            // Задержка для завершения анимации
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        });
+    });
+
+    // Закрытие по клику на подложку
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.querySelector('.modal').classList.remove('active');
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
     });
 });

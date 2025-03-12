@@ -118,7 +118,25 @@
             <a href="#">Privacy Policy</a>
         </div>
     </footer>
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Up</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <input type="text" class="modal-input" placeholder="Name" required>
+                <input type="email" class="modal-input" placeholder="Email" required>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="cancelBtn">Cancel</button>
+                <button class="modal-btn primary" id="okBtn">OK</button>
+            </div>
+        </div>
+    </div>
     <script src="scripts/swiper-bundle.min.js"></script>
     <script src="scripts/scripts.js"></script>
+
 </body>
 </html>
