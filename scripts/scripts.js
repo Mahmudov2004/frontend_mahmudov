@@ -162,3 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Preloader functionality
+window.addEventListener('DOMContentLoaded', () => {
+    const preloader = document.querySelector('.preloader');
+    
+    // Simulate longer load time for demonstration (remove in production)
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+      
+      // Remove from DOM after animation completes
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 500); // Matches CSS transition duration
+    }, 1000); // 1s delay before hiding
+  });
+  
