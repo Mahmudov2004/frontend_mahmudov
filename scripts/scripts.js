@@ -1,30 +1,53 @@
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const preloader = document.querySelector('.preloader');
-    setTimeout(() => {
+    preloader.style.display = 'block';
+
+    try {
+        // Получаем данные с сервера
+        const [posts, photos] = await Promise.all([
+            fetch('https://jsonplaceholder.typicode.com/posts?_limit=3').then(res => res.json()),
+            fetch('https://jsonplaceholder.typicode.com/photos?_limit=3').then(res => res.json())
+        ]);
+
+        // Формируем карточки
+        const cards = posts.map((post, index) => ({
+            id: `card-${index + 1}`,
+            title: post.title,
+            description: post.body,
+            image: photos[index]?.thumbnailUrl || 'img/134006.png'
+        }));
+
+        // Инициализация компонентов
+        initCardSwitcher(cards);
+        initSlider(cards);
+        initModals();
+
+    } finally {
+        // Скрываем прелоадер
         preloader.classList.add('hidden');
-        setTimeout(() => {
-            preloader.style.display = 'none';
-        }, 500);
-    }, 1000);
+        setTimeout(() => preloader.style.display = 'none', 500);
+    }
 });
 
-const cards = {
-    "card-1": {
-        title: "Expand Your Horizons",
-        description: "Learn how to showcase your unique skills and stand out in the competitive job market.",
-        image: "img/134006.png"
-    },
-    "card-2": {
-        title: "Creative Portfolios Made Easy",
-        description: "We provide tools to make your portfolio shine and attract the right recruiters effortlessly.",
-        image: "img/134006.png"
-    },
-    "card-3": {
-        title: "Achieve Your Goals",
-        description: "Take the next step in your career journey with Jobly's seamless job-matching platform.",
-        image: "img/134006.png"
+function initCardSwitcher(cards) {
+    const features = document.querySelectorAll('.feature');
+    const cardDisplay = document.querySelector('.card-display');
+
+    // Начальное отображение
+    if (features.length && cardDisplay) {
+        features[0].classList.add('active');
+        cardDisplay.innerHTML = createCardTemplate(cards[0]);
     }
-};
+
+    // Обработчики кликов
+    features.forEach((feature, index) => {
+        feature.addEventListener('click', () => {
+            features.forEach(f => f.classList.remove('active'));
+            feature.classList.add('active');
+            cardDisplay.innerHTML = createCardTemplate(cards[index]);
+        });
+    });
+}
 
 function createCardTemplate({ title, description, image }) {
     return `
@@ -36,114 +59,48 @@ function createCardTemplate({ title, description, image }) {
     `;
 }
 
-function displayCard(cardData) {
-    const cardDisplay = document.querySelector('.card-display');
-    if (!cardDisplay) return;
-    cardDisplay.innerHTML = createCardTemplate(cardData);
-}
+function initSlider(cards) {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    if (!swiperWrapper) return;
 
-function handleFeatureClicks() {
-    const features = document.querySelectorAll('.feature');
+    // Генерация слайдов
+    swiperWrapper.innerHTML = cards.map(card => `
+        <div class="swiper-slide">${createCardTemplate(card)}</div>
+    `).join('');
 
-    if (features.length > 0) {
-        features[0].classList.add('active');
-        displayCard(cards['card-1']);
-    }
-
-    features.forEach((feature, index) => {
-        feature.addEventListener('click', () => {
-            features.forEach(f => f.classList.remove('active'));
-            feature.classList.add('active');
-            const cardKey = `card-${index + 1}`;
-            if (cards[cardKey]) {
-                displayCard(cards[cardKey]);
-            }
-        });
-    });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    handleFeatureClicks();
-
- 
-
-
-    cancelButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            modalOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-        });
-    });
-
-
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const swiper = new Swiper('.swiper-container', {
-        // Параметры слайдера
-        loop: true, // Бесконечная прокрутка
-        autoplay: {
-            delay: 3000, // Автопрокрутка каждые 3 секунды
-            disableOnInteraction: false, // Продолжать автопрокрутку после взаимодействия
-        },
-
-        // Пагинация
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true, // Разрешить клик по точкам пагинации
-        },
-
-        // Навигационные кнопки
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-
-        // Отступы между слайдами
+    // Инициализация Swiper
+    new Swiper('.swiper-container', {
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
         spaceBetween: 30,
-
-        // Количество слайдов для показа одновременно
-        slidesPerView: 1, // Показываем только одну карточку
-
-        
-        breakpoints: {
-            640: {
-                slidesPerView: 1,
-            },
-            768: {
-                slidesPerView: 1,
-            },
-            1024: {
-                slidesPerView: 1,
-            },
-        },
+        slidesPerView: 1,
+        breakpoints: { 
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 1 },
+            1024: { slidesPerView: 1 }
+        }
     });
-});
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+function initModals() {
     const modalOverlay = document.getElementById('modalOverlay');
-    const openButtons = document.querySelectorAll('.sign, .login');
-    const closeButtons = document.querySelectorAll('#closeModal, #cancelBtn, #okBtn');
-
-    // Открытие модального окна
-    openButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+    
+    // Открытие модалки
+    document.querySelectorAll('.sign, .login').forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
             modalOverlay.style.display = 'block';
             document.body.style.overflow = 'hidden';
-            
-            // Задержка для анимации
-            setTimeout(() => {
-                modalOverlay.querySelector('.modal').classList.add('active');
-            }, 50);
+            setTimeout(() => modalOverlay.querySelector('.modal').classList.add('active'), 50);
         });
     });
 
-    // Закрытие модального окна
-    closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
+    // Закрытие модалки
+    document.querySelectorAll('#closeModal, #cancelBtn, #okBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
             modalOverlay.querySelector('.modal').classList.remove('active');
-            
-            // Задержка для завершения анимации
             setTimeout(() => {
                 modalOverlay.style.display = 'none';
                 document.body.style.overflow = '';
@@ -161,20 +118,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
         }
     });
-});
-
-// Preloader functionality
-window.addEventListener('DOMContentLoaded', () => {
-    const preloader = document.querySelector('.preloader');
-    
-    // Simulate longer load time for demonstration (remove in production)
-    setTimeout(() => {
-      preloader.classList.add('hidden');
-      
-      // Remove from DOM after animation completes
-      setTimeout(() => {
-        preloader.style.display = 'none';
-      }, 500); // Matches CSS transition duration
-    }, 1000); // 1s delay before hiding
-  });
-  
+}
