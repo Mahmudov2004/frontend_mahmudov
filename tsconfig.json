@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2015", // Ensures compatibility with modern JavaScript features
+    "module": "ESNext", // Use ES modules for modern environments (adjust as needed)
+    "strict": true, // Enables strict type-checking
+    "esModuleInterop": true, // Allows interoperability with CommonJS modules
+    "lib": ["ES2015", "DOM"], // Includes type definitions for ES2015 and DOM APIs
+    "allowJs": true, // Allows TypeScript to process JavaScript files
+    "checkJs": true, // Enables type-checking for JavaScript files
+    "sourceMap": true, // Generates source maps for debugging
+    "outDir": "scripts", // Outputs compiled files to the "scripts" directory
+    "rootDir": "ts" // Specifies the root directory of input files
+  },
+  "include": ["ts/**/*"] // Includes all TypeScript files in the "ts" directory
+}
